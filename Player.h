@@ -21,8 +21,8 @@ class Player
         ~Player();
 
         objPos getPlayerPos() const; // Upgrade this in iteration 3.       
-        void updatePlayerDir();
-        void movePlayer();
+        void updatePlayerDir(); //Update direction.
+        void movePlayer(); //Move player position.
 
         // More methods to be added here
 

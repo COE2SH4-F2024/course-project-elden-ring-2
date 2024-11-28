@@ -1,6 +1,6 @@
 #include "objPos.h"
 
-objPos::objPos()
+objPos::objPos() //Default Constructor.
 {
     pos = new Pos;
     pos->x = 0;
@@ -8,7 +8,7 @@ objPos::objPos()
     symbol = 0; //NULL
 }
 
-objPos::objPos(int xPos, int yPos, char sym)
+objPos::objPos(int xPos, int yPos, char sym) //Parametrized Constructor.
 {
     pos = new Pos;
     pos->x = xPos;
@@ -19,7 +19,43 @@ objPos::objPos(int xPos, int yPos, char sym)
 // Respect the rule of six / minimum four
 // [TODO] Implement the missing special member functions to meet the minimum four rule
 
+objPos::~objPos() //Destructor.
+{
+    delete pos; //Deallocate memory for pos.
+    pos = nullptr; //Prevented unwanted access to heap.
+}
 
+objPos::objPos(const objPos& other)
+{
+    pos = new Pos; //Allocate heap memory for variable of type Pos (struct).
+    
+    //Copy x and y into newly allocated memory from 'other' objpos.
+    pos->x = other.pos->x;
+    pos->y = other.pos->y;
+
+    //Copy symbol of 'other' objpos.
+    symbol = other.symbol;
+
+}
+
+objPos& objPos::operator=(const objPos& other)
+{
+    //No point in copying if same thing.
+    if (this==&other)
+        return *this;
+
+    delete pos; //Get rid of existing memory access in heap to prevent memory leak.
+
+    //Allocate new memory in Heap and assign x,y values of 'other' to pos.
+    pos = new Pos;
+    pos->x = other.pos->x;
+    pos->y = other.pos->y;
+
+    //Assign symbol of 'other' to symbol of this objpos.
+    symbol = other.symbol;
+
+    return *this; //Get reference to this objpos to allow for situations like a = b = c.
+}
 
 
 void objPos::setObjPos(objPos o)
