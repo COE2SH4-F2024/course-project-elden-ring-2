@@ -55,7 +55,7 @@ void Initialize(void)
 
     food = new Food(gamemechs);
 
-    food->generateFood(player->getPlayerPos()); //Random food position
+    food->generateFood(player->getPlayerPos()->getHeadElement()); //Random food position
 
     
 }
@@ -96,14 +96,18 @@ void DrawScreen(void)
             }
 
             //If x and y coordinates are player coordinates, print player symbol.
-            else if (x == player->getPlayerPos().pos->x && y==player->getPlayerPos().pos->y)
-            {
-                MacUILib_printf("%c", player->getPlayerPos().getSymbol());
-                printed = 1;
+            // Draw snake body
+            objPosArrayList* body = player->getPlayerPos();
+            for (int i = 0; i < body->getSize(); i++) {
+                if (x == body->getElement(i).pos->x && y == body->getElement(i).pos->y) {
+                    MacUILib_printf("*");
+                    printed = true;
+                    break;
+                }
             }
 
             //If x and y coordinates are food coordinates, print food symbol.
-            else if (x == food->getFoodPos().pos->x && y == food->getFoodPos().pos->y) 
+            if (x == food->getFoodPos().pos->x && y == food->getFoodPos().pos->y) 
             {
                 MacUILib_printf("%c", food->getFoodPos().getSymbol());
                 printed = true;
