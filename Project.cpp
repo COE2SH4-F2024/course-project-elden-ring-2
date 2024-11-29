@@ -2,6 +2,7 @@
 #include "MacUILib.h"
 #include "objPos.h"
 #include "Player.h"
+#include "Food.h"
 
 using namespace std;
 
@@ -9,6 +10,7 @@ using namespace std;
 
 GameMechs *gamemechs; //ptr to gamemechs.
 Player *player; //ptr to player object in global scope.
+Food* food; //ptr to food.
 
 
 void Initialize(void);
@@ -49,6 +51,13 @@ void Initialize(void)
     player = new Player(gamemechs);       // Initialize player
 
     gamemechs->setInput(0);
+    srand(time(NULL)); //Seed random generator to further randomize rand().
+
+    food = new Food(gamemechs);
+
+    food->generateFood(player->getPlayerPos()); //Random food position
+
+    
 }
 
 void GetInput(void)
@@ -86,18 +95,26 @@ void DrawScreen(void)
                 printed = true;
             }
 
+            //If x and y coordinates are player coordinates, print player symbol.
             else if (x == player->getPlayerPos().pos->x && y==player->getPlayerPos().pos->y)
             {
                 MacUILib_printf("%c", player->getPlayerPos().getSymbol());
                 printed = 1;
             }
 
-            // Draw random ASCII object (for example purposes)
-            else if (x == 6 && y == 8) { // Arbitrary position
-                objPos randomObj(6, 8, 'X'); // Example objPos usage
-                MacUILib_printf("%c", randomObj.getSymbol());
+            //If x and y coordinates are food coordinates, print food symbol.
+            else if (x == food->getFoodPos().pos->x && y == food->getFoodPos().pos->y) 
+            {
+                MacUILib_printf("%c", food->getFoodPos().getSymbol());
                 printed = true;
             }
+
+            // //Draw random ASCII object (for example purposes)
+            // else if (x == 6 && y == 8) { // Arbitrary position
+            //     objPos randomObj(6, 8, 'X'); // Example objPos usage
+            //     MacUILib_printf("%c", randomObj.getSymbol());
+            //     printed = true;
+            // }
 
             if (!printed) {
                 MacUILib_printf(" ");
@@ -122,4 +139,5 @@ void CleanUp(void)
     //Delete heap memory
     delete player;
     delete gamemechs;
+    delete food;
 }

@@ -6,24 +6,27 @@ Player::Player(GameMechs* thisGMRef)
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
 
-    // more actions to be included
+    // Create list to record snake body in heap.
+    playerPosList = new objPosArrayList();
+
+    //Initialize a new objPos with X,Y in the centre of the board. 
+    objPos head(mainGameMechsRef->getBoardSizeX()/2,mainGameMechsRef->getBoardSizeY()/2,'*');
     
-    //Init player in centre of the board as an '*'.
-    playerPos.setObjPos(mainGameMechsRef->getBoardSizeX()/2,mainGameMechsRef->getBoardSizeY()/2,'*');
+    //Insert head to the snake body. 
+    playerPosList->insertHead(head);
 }
 
 
 Player::~Player()
 {
     // delete any heap members here
-    
-    //For now, nothing, since playerPos is being declared in stack.
+    delete playerPosList;
 }
 
-objPos Player::getPlayerPos() const
+objPosArrayList* Player::getPlayerPos() const
 {
     // return the reference to the playerPos array list
-    return playerPos;
+    return playerPosList;
 }
 
 void Player::updatePlayerDir()
@@ -87,30 +90,36 @@ void Player::updatePlayerDir()
 void Player::movePlayer()
 {
     // PPA3 Finite State Machine logic
+
+    //Head position
+    objPos head = playerPosList->getHeadElement(); 
+
+    int x = head.pos->x, y = head.pos->y;
+
     switch(myDir)
     {
         case UP:
-            playerPos.pos->x--;
-            if (playerPos.pos->x<1)
-                playerPos.pos->x = mainGameMechsRef->getBoardSizeX()-2;
+            x--;
+            if (x<1)
+                x = mainGameMechsRef->getBoardSizeX()-2;
             break;
         
         case DOWN:
-            playerPos.pos->x++;
-            if (playerPos.pos->x>mainGameMechsRef->getBoardSizeX()-2)
-                playerPos.pos->x = 1;
+            x++;
+            if (x>mainGameMechsRef->getBoardSizeX()-2)
+                x = 1;
             break;
         
         case LEFT:
-            playerPos.pos->y--;
-            if (playerPos.pos->y<1)
-                playerPos.pos->y = mainGameMechsRef->getBoardSizeY()-2;
+            y--;
+            if (y<1)
+                y = mainGameMechsRef->getBoardSizeY()-2;
             break;
 
         case RIGHT:
-            playerPos.pos->y++;
-            if (playerPos.pos->y>mainGameMechsRef->getBoardSizeY()-2)
-                playerPos.pos->y = 1;
+            y++;
+            if (y>mainGameMechsRef->getBoardSizeY()-2)
+                y = 1;
             break;
 
         case STOP:
@@ -120,6 +129,11 @@ void Player::movePlayer()
         default:
             break;
     }
+
+    objPos newhead(head);
+
+    playerPosList->insertHead(newhead);
+    playerPosList->removeTail();
 }
 
 // More methods to be added

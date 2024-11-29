@@ -8,9 +8,12 @@ class Food
 {
     private:
         objPos food;
+        
+        //Reference to gamemechs to get board size.
+        GameMechs* mainGameMechsRef;
 
     public:
-        Food();
+        Food(GameMechs* thisGMRef);
         ~Food();
         void generateFood(objPos blockOff);
         objPos getFoodPos() const;
