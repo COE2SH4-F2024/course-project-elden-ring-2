@@ -4,14 +4,16 @@ GameMechs::GameMechs()
 {
     input = 0;          // Initialize input to null
     exitFlag = false;   // Initialize exit flag
-    boardSizeX = 30;
-    boardSizeY = 15;
+    loseFlag = false;   // Initialize lose flag
+    boardSizeX = 15;
+    boardSizeY = 30;
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
 {
     input = 0;          // Initialize input to null
     exitFlag = false;   // Initialize exit flag
+    loseFlag = false;
     boardSizeX = boardX;
     boardSizeY = boardY;
 }

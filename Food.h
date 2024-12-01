@@ -2,7 +2,8 @@
 #define FOOD_H
 
 #include "objPos.h"
-#include "GameMechs.h" // Required to access board dimensions   
+#include "GameMechs.h" // Required to access board dimensions
+#include "objPosArrayList.h"   
 
 class Food
 {
@@ -15,7 +16,7 @@ class Food
     public:
         Food(GameMechs* thisGMRef);
         ~Food();
-        void generateFood(objPos blockOff);
+        void generateFood(objPosArrayList* blockOff);
         objPos getFoodPos() const;
 
 

@@ -47,15 +47,16 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    gamemechs = new GameMechs(10, 20); // Initialize game mechanics
-    player = new Player(gamemechs);       // Initialize player
+    gamemechs = new GameMechs(); // Initialize game mechanics
+    food = new Food(gamemechs);
+
+    player = new Player(gamemechs, food);       // Initialize player
 
     gamemechs->setInput(0);
     srand(time(NULL)); //Seed random generator to further randomize rand().
 
-    food = new Food(gamemechs);
-
-    food->generateFood(player->getPlayerPos()->getHeadElement()); //Random food position
+    
+    food->generateFood(player->getPlayerPos()); //Random food position
 
     
 }
@@ -72,18 +73,14 @@ void RunLogic(void)
 {
     player->updatePlayerDir();
     player->movePlayer();
-
-    if(gamemechs->getInput() == ' ')
-    {
-        gamemechs->setExitTrue();
-        gamemechs->setLoseFlag();
-    }
 }
 
 void DrawScreen(void)
 {
     MacUILib_clearScreen();
 
+    MacUILib_printf("Snake Game\n");
+    MacUILib_printf("----------\n----------\n\n");
     // Iterate through each row
     for (int x = 0; x < gamemechs->getBoardSizeX(); x++) {
         for (int y = 0; y < gamemechs->getBoardSizeY(); y++) {
@@ -107,18 +104,11 @@ void DrawScreen(void)
             }
 
             //If x and y coordinates are food coordinates, print food symbol.
-            if (x == food->getFoodPos().pos->x && y == food->getFoodPos().pos->y) 
+            if (x == food->getFoodPos().pos->x && y == food->getFoodPos().pos->y && !player->checkFoodConsumption()) 
             {
                 MacUILib_printf("%c", food->getFoodPos().getSymbol());
                 printed = true;
             }
-
-            // //Draw random ASCII object (for example purposes)
-            // else if (x == 6 && y == 8) { // Arbitrary position
-            //     objPos randomObj(6, 8, 'X'); // Example objPos usage
-            //     MacUILib_printf("%c", randomObj.getSymbol());
-            //     printed = true;
-            // }
 
             if (!printed) {
                 MacUILib_printf(" ");
@@ -126,6 +116,8 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }
+
+    MacUILib_printf("Score: %d\n", player->getScore());
 }
 
 void LoopDelay(void)
@@ -136,7 +128,15 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    // MacUILib_clearScreen();    
+
+    if (gamemechs->getLoseFlagStatus())
+    {
+        MacUILib_printf("You lose! Better luck next time!\n");
+    }
+    else
+    {
+        MacUILib_printf("Game Over! Exiting...\n");
+    }   
 
     MacUILib_uninit();
 

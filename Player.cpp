@@ -1,10 +1,11 @@
 #include "Player.h"
 
 
-Player::Player(GameMechs* thisGMRef)
+Player::Player(GameMechs* thisGMRef, Food* food)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
+    this->food = food;
 
     // Create list to record snake body in heap.
     playerPosList = new objPosArrayList();
@@ -20,7 +21,7 @@ Player::Player(GameMechs* thisGMRef)
 Player::~Player()
 {
     // delete any heap members here
-    delete[] playerPosList;
+    delete playerPosList;
 }
 
 objPosArrayList* Player::getPlayerPos() const
@@ -132,8 +133,68 @@ void Player::movePlayer()
 
     objPos newhead(x,y,'*');
 
-    playerPosList->insertHead(newhead);
-    playerPosList->removeTail();
+    if(checkSelfCollision())
+    {
+        mainGameMechsRef->setExitTrue();
+        mainGameMechsRef->setLoseFlag();
+    }
+
+    else if (checkFoodConsumption())
+    {
+        increasePlayerLength(newhead);
+        food->generateFood(playerPosList);
+    }
+
+    else
+    {
+        playerPosList->insertHead(newhead);
+        playerPosList->removeTail();
+    }
+
+    
 }
 
+
 // More methods to be added
+bool Player::checkFoodConsumption()
+{
+    objPos head = playerPosList->getHeadElement();
+
+    int foodX = food->getFoodPos().pos->x;
+    int foodY = food->getFoodPos().pos->y;
+
+    if (head.pos->x == foodX && head.pos->y == foodY)
+    {
+        return true;
+    }
+    return false;
+}
+
+void Player::increasePlayerLength(objPos newhead)
+{
+    playerPosList->insertHead(newhead);
+}
+
+int Player::getScore()
+{
+    // Score is snake length minus 1 (head does not count towards score)
+    return playerPosList->getSize() - 1;
+}
+
+bool Player::checkSelfCollision()
+{
+    //Get head element x,y
+    int x = playerPosList->getHeadElement().pos->x, y = playerPosList->getHeadElement().pos->y;
+    
+    for (int i = 1; i < playerPosList->getSize(); i++)
+    {
+        objPos segment = playerPosList->getElement(i); // Get each snake segment
+        if (segment.pos->x == x && segment.pos->y == y)
+        {
+            return true; // Overlapping detected
+            break;
+        }
+    }
+
+    return false;
+}
