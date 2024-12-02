@@ -8,9 +8,10 @@ objPosArrayList::objPosArrayList()
 {
     aList = new objPos[ARRAY_MAX_CAP];
     listSize = 0;
+    arrayCapacity = ARRAY_MAX_CAP;
 
     // Explicitly initialize all elements
-    for (int i = 0; i < ARRAY_MAX_CAP; ++i)
+    for (int i = 0; i < arrayCapacity; ++i)
         aList[i] = objPos(); // Default constructor of objPos
 }
 
@@ -99,4 +100,42 @@ objPos objPosArrayList::getElement(int index) const
 
     // Return element after accounting for illegal values.
     return aList[index];
+}
+
+//essentially clears the list.
+void objPosArrayList::clear()
+{
+    for (int i = 0; i < listSize; ++i) 
+    {
+        aList[i] = objPos();//Reinitialize each element with the default constructor
+    }
+
+    listSize = 0; 
+}
+
+
+//Used to expand array size if max capacity is reached.
+void objPosArrayList::expandArray()
+{
+    //Set unitsize to 200 and add it to original max capacity.
+    int unitsize = arrayCapacity;
+    arrayCapacity += unitsize;
+
+    //Create a new list of double the size of the original.
+    objPos* temp = new objPos[arrayCapacity];
+
+    //Perform deep copy of important elements (Listsize)
+    for (int i=0; i<listSize; i++)
+        temp[i] = aList[i];
+
+    //Delete old list.
+    delete[] aList;
+
+    //Assign pointer of new list (temp) to old.
+    aList = temp;
+}
+
+int objPosArrayList::getcap()
+{
+    return arrayCapacity;
 }

@@ -3,6 +3,7 @@
 GameMechs::GameMechs()
 {
     input = 0;          // Initialize input to null
+    score = 0;          // Initialize score to zero.
     exitFlag = false;   // Initialize exit flag
     loseFlag = false;   // Initialize lose flag
     boardSizeX = 15;
@@ -12,8 +13,9 @@ GameMechs::GameMechs()
 GameMechs::GameMechs(int boardX, int boardY)
 {
     input = 0;          // Initialize input to null
+    score = 0;          // Initialize score to zero.
     exitFlag = false;   // Initialize exit flag
-    loseFlag = false;
+    loseFlag = false;   // Initialize lost falg
     boardSizeX = boardX;
     boardSizeY = boardY;
 }
@@ -22,7 +24,7 @@ GameMechs::GameMechs(int boardX, int boardY)
 // Not needed for now.
 GameMechs::~GameMechs()
 {
-
+    
 }
 
 bool GameMechs::getExitFlagStatus() const

@@ -133,68 +133,142 @@ void Player::movePlayer()
 
     objPos newhead(x,y,'*');
 
-    if(checkSelfCollision())
+    if(checkSelfCollision(newhead))
     {
         mainGameMechsRef->setExitTrue();
         mainGameMechsRef->setLoseFlag();
+        return;
     }
 
-    else if (checkFoodConsumption())
+    char foodType;
+    if (checkFoodConsumption(foodType))
     {
-        increasePlayerLength(newhead);
-        food->generateFood(playerPosList);
+        handleFoodConsumption(foodType);
+        return;
     }
 
-    else
-    {
-        playerPosList->insertHead(newhead);
-        playerPosList->removeTail();
-    }
+    playerPosList->insertHead(newhead);
+    playerPosList->removeTail();
 
     
 }
 
 
 // More methods to be added
-bool Player::checkFoodConsumption()
+bool Player::checkFoodConsumption(char& foodType)
 {
     objPos head = playerPosList->getHeadElement();
 
-    int foodX = food->getFoodPos().pos->x;
-    int foodY = food->getFoodPos().pos->y;
-
-    if (head.pos->x == foodX && head.pos->y == foodY)
+    for (int i=0; i<food->getFoodPos()->getSize();i++)
     {
-        return true;
-    }
+        objPos foodItem = food->getFoodPos()->getElement(i);
+        int foodX = foodItem.pos->x, foodY = foodItem.pos->y;
+
+        if (head.pos->x == foodX && head.pos->y == foodY)
+        {
+            foodType = foodItem.getSymbol();
+            return true;
+        }
+   
+    }  
+
     return false;
 }
 
-void Player::increasePlayerLength(objPos newhead)
+void Player::increasePlayerLength()
 {
-    playerPosList->insertHead(newhead);
+    // Get the current tail segment
+    objPos tail = playerPosList->getTailElement();
+    int tailX = tail.pos->x;
+    int tailY = tail.pos->y;
+
+    // Handle case where the snake has only one segment
+    if (playerPosList->getSize() == 1) 
+    {
+        // Add a duplicate of the only segment (head)
+        playerPosList->insertTail(objPos(tailX, tailY, '*'));
+        return;
+    }
+
+    // Determine the direction of the segment before the tail
+    objPos secondLastSegment = playerPosList->getElement(playerPosList->getSize() - 2);
+
+    // Calculate new tail position based on the direction
+    if (secondLastSegment.pos->x < tailX)
+        tailX++; // The previous segment is above, grow down
+
+    else if (secondLastSegment.pos->x > tailX)
+        tailX--; // The previous segment is below, grow up
+
+    else if (secondLastSegment.pos->y < tailY)
+        tailY++; // The previous segment is left, grow right
+
+    else if (secondLastSegment.pos->y > tailY)
+        tailY--; // The previous segment is right, grow left
+    
+
+    // Apply wrap-around logic if the new tail position goes out of bounds
+    if (tailX > mainGameMechsRef->getBoardSizeX()-2)
+        tailX = 1;  
+
+    else if (tailX < 1)
+        tailX = mainGameMechsRef->getBoardSizeX() - 2;  
+    
+
+    if (tailY > mainGameMechsRef->getBoardSizeY()-2) 
+        tailY = 1;  
+
+    else if (tailY < 1)
+        tailY = mainGameMechsRef->getBoardSizeY() - 2;  
+    
+
+    //In case we reach max array size, expand array.
+    if(playerPosList->getSize()==playerPosList->getcap())
+        playerPosList->expandArray();
+    
+    // Add the new segment at the calculated position    
+    playerPosList->insertTail(objPos(tailX, tailY, '*'));
 }
 
 int Player::getScore()
 {
     // Score is snake length minus 1 (head does not count towards score)
-    return playerPosList->getSize() - 1;
+    return mainGameMechsRef->getScore();
 }
 
-bool Player::checkSelfCollision()
+bool Player::checkSelfCollision(objPos& newhead)
 {
-    //Get head element x,y
-    int x = playerPosList->getHeadElement().pos->x, y = playerPosList->getHeadElement().pos->y;
-    
-    for (int i = 1; i < playerPosList->getSize(); i++)
-    {
-        objPos segment = playerPosList->getElement(i); // Get each snake segment
-        if (segment.pos->x == x && segment.pos->y == y)
-        {
-            return true; // Overlapping detected
-            break;
+    /// Check the new head position against the body
+    for (int i = 1; i < playerPosList->getSize(); i++) { // Start from 1 to exclude head
+        objPos segment = playerPosList->getElement(i);
+        if (segment.isPosEqual(&newhead)) {
+            return true; // Collision detected
         }
     }
-
     return false;
+}
+
+void Player::handleFoodConsumption(char foodType)
+{
+    int growth = 0, scoreIncrement = 0;
+
+    // Determine growth and score based on food type
+    switch (foodType) {
+        case 'X': growth = 1; scoreIncrement = 1; break;
+        case 'Y': growth = 1; scoreIncrement = 10; break;
+        case 'Z': growth = 10; scoreIncrement = 50; break;
+    }
+
+    // Grow snake from the tail
+    for (int i = 0; i < growth; i++) {
+        increasePlayerLength();
+    }
+
+    // Update score
+    for (int i = 0; i < scoreIncrement; i++) {
+        mainGameMechsRef->incrementScore();
+    }
+
+    // Generate new food
+    food->generateFood(playerPosList);
 }

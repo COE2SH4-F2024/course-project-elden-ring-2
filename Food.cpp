@@ -10,68 +10,93 @@
 Food::Food(GameMechs* thisGMRef) 
 {
     //Initialize food of type objPos to some arbitrary position.
-    food = objPos(3, 3, 'X');
+    foodBucket = new objPosArrayList();
     mainGameMechsRef = thisGMRef;
+
+    //Note: Initialization is unecessary here since the values are overwritten anyways, but we did it just to be safe.
+    for (int i = 0; i < 5; i++) //Assuming an initial size of 5
+    { 
+        //Random X and Y coordinates. 
+        int randomX = (rand() % (mainGameMechsRef->getBoardSizeX() - 2)) + 1;
+        int randomY = (rand() % (mainGameMechsRef->getBoardSizeY() - 2)) + 1;
+        foodBucket->insertTail(objPos(randomX, randomY, 'X'));
+    }
 }
 
 Food::~Food()
 {
-    
+    delete[] foodBucket; 
 }
 
-// //Generates a new random position on the board, avoiding the player's position.
-// void Food::generateFood(objPos blockOff) 
-// {
-//     int xRange = mainGameMechsRef->getBoardSizeX(); // Get board dimensions
-//     int yRange = mainGameMechsRef->getBoardSizeY();
-
-//     int newX, newY;
-
-//     // Generate a valid position
-//     do {
-//         newX = (rand() % (xRange - 2)) + 1;
-//         newY = (rand() % (yRange - 2)) + 1;
-
-//         // Ensure the position is not overlapping the player's position
-//     } while (newX == blockOff.pos->x && newY == blockOff.pos->y);
-
-//     // Update food position
-//     food.setObjPos(newX, newY, 'X'); // 'X' represents the food symbol
-// }
-
-//NEW FOR FEATURE 2
+//Bonus
 void Food::generateFood(objPosArrayList* playerBody)
 {
+    //Get boardsize from gameMechs class reference.
     int xRange = mainGameMechsRef->getBoardSizeX();
     int yRange = mainGameMechsRef->getBoardSizeY();
-    int newX, newY;
-    bool positionValid;
 
-    do {
-        // Generate random x and y positions
-        newX = (rand() % (xRange - 2)) + 1; // Exclude the borders
-        newY = (rand() % (yRange - 2)) + 1;
+    //Clear old foodbucket contents.
+    foodBucket->clear();
+    
+    //Iterate 5 times (assuming 5 items generated at a time).
+    for (int i = 0; i < 5; i++) 
+    {
+        //Create new x,y values for storing position and flag for checking if said position is valid.
+        int newX, newY;
+        bool positionValid;
 
-        positionValid = true;
-
-        // Check for overlap with the snake body
-        for (int i = 0; i < playerBody->getSize(); i++)
+        //Iterate until a valid position.
+        do 
         {
-            objPos segment = playerBody->getElement(i); // Get each snake segment
-            if (segment.pos->x == newX && segment.pos->y == newY)
-            {
-                positionValid = false; // Overlapping detected
-                break;
-            }
-        }
-    } while (!positionValid); // Repeat until a valid position is found
+            //Generate new x,y coordinates for fooditem.
+            newX = (rand() % (xRange - 2)) + 1; // Exclude the borders
+            newY = (rand() % (yRange - 2)) + 1;
 
-    // Update the food position
-    food.setObjPos(newX, newY, 'X'); // 'X' is the food symbol
+            //Set flag to true.
+            positionValid = true;
+
+            //Check for overlap with the player's body
+            for (int j = 0; j < playerBody->getSize(); j++) {
+                objPos segment = playerBody->getElement(j);
+                if (segment.pos->x == newX && segment.pos->y == newY) {
+                    positionValid = false;
+                    break;
+                }
+            }
+
+            //Check for overlap with already generated food in the bucket
+            for (int k = 0; k < foodBucket->getSize(); k++) {
+                objPos foodItem = foodBucket->getElement(k);
+                if (foodItem.pos->x == newX && foodItem.pos->y == newY) {
+                    positionValid = false;
+                    break;
+                }
+            }
+        } while (!positionValid);
+
+        //Assign symbols: 'X' (default), 'Y' (special), or 'Z' (very special)
+        char symbol;
+        
+        //First symbol in food bucket will be Z
+        if (i == 0)         
+            symbol = 'Z';
+
+        //Second will be Y
+        else if (i == 1)  
+            symbol = 'Y';
+        
+        //The remaining three will be X
+        else                 
+            symbol = 'X';
+    
+
+        objPos newFood(newX, newY, symbol);
+        foodBucket->insertHead(newFood);
+    }
 }
 
 // Getter for the food position
-objPos Food::getFoodPos() const 
+objPosArrayList* Food::getFoodPos() const 
 {
-    return food.getObjPos();
+    return foodBucket;
 }

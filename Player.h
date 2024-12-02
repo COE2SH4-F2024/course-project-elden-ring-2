@@ -24,10 +24,11 @@ class Player
         objPosArrayList* getPlayerPos() const; // Upgrade this in iteration 3.       
         void updatePlayerDir(); //Update direction.
         void movePlayer(); //Move player position.
-        bool checkFoodConsumption();
-        void increasePlayerLength(objPos newhead);
+        bool checkFoodConsumption(char& foodType);
+        void increasePlayerLength();
         int getScore();
-        bool checkSelfCollision();
+        bool checkSelfCollision(objPos& newhead);
+        void handleFoodConsumption(char foodType);
 
         // More methods to be added here
 

@@ -8,7 +8,7 @@
 class Food
 {
     private:
-        objPos food;
+        objPosArrayList* foodBucket; // List of food items
         
         //Reference to gamemechs to get board size.
         GameMechs* mainGameMechsRef;
@@ -16,8 +16,8 @@ class Food
     public:
         Food(GameMechs* thisGMRef);
         ~Food();
-        void generateFood(objPosArrayList* blockOff);
-        objPos getFoodPos() const;
+        void generateFood(objPosArrayList* playerBody);
+        objPosArrayList* getFoodPos() const;
 
 
 };

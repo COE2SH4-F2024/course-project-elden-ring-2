@@ -86,28 +86,37 @@ void DrawScreen(void)
         for (int y = 0; y < gamemechs->getBoardSizeY(); y++) {
             bool printed = false;
 
-            // Draw border
+            //Draw border.
             if (x == 0 || y == 0 || x == gamemechs->getBoardSizeX() - 1 || y == gamemechs->getBoardSizeY() - 1) {
                 MacUILib_printf("%c", '#');
                 printed = true;
             }
 
-            //If x and y coordinates are player coordinates, print player symbol.
-            // Draw snake body
+            //Draw snake body.
             objPosArrayList* body = player->getPlayerPos();
-            for (int i = 0; i < body->getSize(); i++) {
-                if (x == body->getElement(i).pos->x && y == body->getElement(i).pos->y) {
+            for (int i = 0; i < body->getSize(); i++) 
+            {
+                if (x == body->getElement(i).pos->x && y == body->getElement(i).pos->y) 
+                {
                     MacUILib_printf("*");
                     printed = true;
                     break;
                 }
             }
 
-            //If x and y coordinates are food coordinates, print food symbol.
-            if (x == food->getFoodPos().pos->x && y == food->getFoodPos().pos->y && !player->checkFoodConsumption()) 
+            
+            char temp;
+            //Print foods.
+            objPosArrayList* foodList = food->getFoodPos();
+            for (int i = 0; i < foodList->getSize(); i++) 
             {
-                MacUILib_printf("%c", food->getFoodPos().getSymbol());
-                printed = true;
+                objPos foodItem = foodList->getElement(i);
+                if (x == foodItem.pos->x && y == foodItem.pos->y && !player->checkFoodConsumption(temp))
+                {
+                    MacUILib_printf("%c", foodItem.getSymbol());
+                    printed = true;
+                    break;
+                }
             }
 
             if (!printed) {
@@ -141,7 +150,7 @@ void CleanUp(void)
     MacUILib_uninit();
 
     //Delete heap memory
-    delete player;
+    player->~Player();
     delete gamemechs;
-    delete food;
+    food->~Food();
 }
