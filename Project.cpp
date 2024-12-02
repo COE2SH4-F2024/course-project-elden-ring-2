@@ -3,6 +3,7 @@
 #include "objPos.h"
 #include "Player.h"
 #include "Food.h"
+#include "windows.h"
 
 using namespace std;
 
@@ -21,10 +22,26 @@ void LoopDelay(void);
 void CleanUp(void);
 
 
+//Professor Chen Mentioned that its fine if I borrowed this logic from Youssef. 
+//It hides the cursor to prevent too much flashing during refresh. (Does not impact the game).
+void HideCursor() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); 
+    CONSOLE_CURSOR_INFO cursorInfo;
+
+    // Get the current cursor info
+    if (GetConsoleCursorInfo(hConsole, &cursorInfo)) {
+        cursorInfo.bVisible = FALSE; 
+        SetConsoleCursorInfo(hConsole, &cursorInfo);
+    } else {
+        printf("Failed to get console cursor info.\n");
+    }
+}
 
 int main(void)
 {
 
+    SetConsoleOutputCP(CP_UTF8);
+    HideCursor();
     Initialize();
 
     
@@ -80,7 +97,7 @@ void DrawScreen(void)
     MacUILib_clearScreen();
 
     MacUILib_printf("Snake Game\n");
-    MacUILib_printf("----------\n----------\n\n");
+    MacUILib_printf("----------\n----------\n");
     // Iterate through each row
     for (int x = 0; x < gamemechs->getBoardSizeX(); x++) {
         for (int y = 0; y < gamemechs->getBoardSizeY(); y++) {
@@ -88,7 +105,7 @@ void DrawScreen(void)
 
             //Draw border.
             if (x == 0 || y == 0 || x == gamemechs->getBoardSizeX() - 1 || y == gamemechs->getBoardSizeY() - 1) {
-                MacUILib_printf("%c", '#');
+                MacUILib_printf("🟫");
                 printed = true;
             }
 
@@ -98,7 +115,7 @@ void DrawScreen(void)
             {
                 if (x == body->getElement(i).pos->x && y == body->getElement(i).pos->y) 
                 {
-                    MacUILib_printf("*");
+                    MacUILib_printf("🥹");
                     printed = true;
                     break;
                 }
@@ -113,20 +130,41 @@ void DrawScreen(void)
                 objPos foodItem = foodList->getElement(i);
                 if (x == foodItem.pos->x && y == foodItem.pos->y && !player->checkFoodConsumption(temp))
                 {
-                    MacUILib_printf("%c", foodItem.getSymbol());
+                    if(foodItem.getSymbol() == 'X')
+                    {
+                        MacUILib_printf("🍎");
+                    }
+
+                    else if (foodItem.getSymbol() == 'Y')
+                    {
+                        MacUILib_printf("⭐");
+                    }
+
+                    else if (foodItem.getSymbol() == 'Z')
+                    {
+                        MacUILib_printf("🌟");
+                    }
+                
                     printed = true;
                     break;
                 }
             }
 
             if (!printed) {
-                MacUILib_printf(" ");
+                MacUILib_printf("%2c", ' ');
             }
         }
         MacUILib_printf("\n");
     }
 
+    MacUILib_printf("Food Guide:\n----------\n");
+    MacUILib_printf("🍎: Regular Food (Score +1, Length +1)\n");
+    MacUILib_printf("⭐: Special Food (Score +10, Length +1)\n");
+    MacUILib_printf("🌟: Very special food (Score +50, Length +10)\n");
+    MacUILib_printf("\nUse AWSD keys to move the snake around!\n\n");
     MacUILib_printf("Score: %d\n", player->getScore());
+    MacUILib_printf("Length: %d\n", player->getPlayerPos()->getSize());
+
 }
 
 void LoopDelay(void)
