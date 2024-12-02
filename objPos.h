@@ -29,9 +29,11 @@ class objPos
         //Copy assignement operator.
         objPos& operator=(const objPos& other);
         
+        //Setters.
         void setObjPos(objPos o);        
         void setObjPos(int xPos, int yPos, char sym);  
 
+        //Getters
         objPos getObjPos() const;
         char getSymbol() const;
         char getSymbolIfPosEqual(const objPos* refPos) const;

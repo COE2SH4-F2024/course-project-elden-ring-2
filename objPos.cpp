@@ -1,6 +1,7 @@
 #include "objPos.h"
 
-objPos::objPos() //Default Constructor.
+//Default constructor.
+objPos::objPos() 
 {
     pos = new Pos;
     pos->x = 0;
@@ -8,7 +9,8 @@ objPos::objPos() //Default Constructor.
     symbol = 0; //NULL
 }
 
-objPos::objPos(int xPos, int yPos, char sym) //Parametrized Constructor.
+//Parametrized constructor.
+objPos::objPos(int xPos, int yPos, char sym) 
 {
     pos = new Pos;
     pos->x = xPos;
@@ -19,12 +21,14 @@ objPos::objPos(int xPos, int yPos, char sym) //Parametrized Constructor.
 // Respect the rule of six / minimum four
 // [TODO] Implement the missing special member functions to meet the minimum four rule
 
-objPos::~objPos() //Destructor.
+//Destructor.
+objPos::~objPos() 
 {
     delete pos; //Deallocate memory for pos.
     pos = nullptr; //Prevented unwanted access to heap.
 }
 
+//Copy constructor.
 objPos::objPos(const objPos& other)
 {
     pos = new Pos; //Allocate heap memory for variable of type Pos (struct).
@@ -38,6 +42,7 @@ objPos::objPos(const objPos& other)
 
 }
 
+//Copy assignement operator.
 objPos& objPos::operator=(const objPos& other)
 {
     //No point in copying if same thing.
@@ -58,6 +63,7 @@ objPos& objPos::operator=(const objPos& other)
 }
 
 
+//Setter for objPos. Similar to copy constructor.
 void objPos::setObjPos(objPos o)
 {
     pos->x = o.pos->x;
@@ -65,6 +71,7 @@ void objPos::setObjPos(objPos o)
     symbol = o.symbol;
 }
 
+//Setter for objPos. Takes x, y, and symbol parameters seperately.
 void objPos::setObjPos(int xPos, int yPos, char sym)
 {
     pos->x = xPos;
@@ -72,6 +79,7 @@ void objPos::setObjPos(int xPos, int yPos, char sym)
     symbol = sym;
 }
 
+//Returns objPos.
 objPos objPos::getObjPos() const
 {
     objPos returnPos;
@@ -82,16 +90,19 @@ objPos objPos::getObjPos() const
     return returnPos;
 }
 
+//Returns symbol
 char objPos::getSymbol() const
 {
     return symbol;
 }
 
+//Checks if two objPos are equal (takes reference to objPos as parameter)
 bool objPos::isPosEqual(const objPos* refPos) const
 {
     return (refPos->pos->x == pos->x && refPos->pos->y == pos->y);
 }
 
+//Returns symbol if objPos = parameter objPos reference.
 char objPos::getSymbolIfPosEqual(const objPos* refPos) const
 {
     if(isPosEqual(refPos))

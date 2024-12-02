@@ -23,6 +23,7 @@ Food::Food(GameMechs* thisGMRef)
     }
 }
 
+//Destructor
 Food::~Food()
 {
     delete[] foodBucket; 
@@ -90,12 +91,13 @@ void Food::generateFood(objPosArrayList* playerBody)
             symbol = 'X';
     
 
+        //Insert the new random food item into foodBucket.
         objPos newFood(newX, newY, symbol);
         foodBucket->insertHead(newFood);
     }
 }
 
-// Getter for the food position
+//Returns a reference to the foodBucket list.
 objPosArrayList* Food::getFoodPos() const 
 {
     return foodBucket;

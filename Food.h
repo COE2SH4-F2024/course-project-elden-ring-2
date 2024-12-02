@@ -8,16 +8,16 @@
 class Food
 {
     private:
-        objPosArrayList* foodBucket; // List of food items
+        objPosArrayList* foodBucket; //List of food items
         
         //Reference to gamemechs to get board size.
         GameMechs* mainGameMechsRef;
 
     public:
-        Food(GameMechs* thisGMRef);
-        ~Food();
-        void generateFood(objPosArrayList* playerBody);
-        objPosArrayList* getFoodPos() const;
+        Food(GameMechs* thisGMRef); //Constructor
+        ~Food(); //Destructor
+        void generateFood(objPosArrayList* playerBody); //Food generation
+        objPosArrayList* getFoodPos() const; //Getter for list reference
 
 
 };

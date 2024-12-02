@@ -105,11 +105,6 @@ objPos objPosArrayList::getElement(int index) const
 //essentially clears the list.
 void objPosArrayList::clear()
 {
-    for (int i = 0; i < listSize; ++i) 
-    {
-        aList[i] = objPos();//Reinitialize each element with the default constructor
-    }
-
     listSize = 0; 
 }
 
