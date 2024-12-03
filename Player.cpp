@@ -238,7 +238,7 @@ int Player::getScore()
 
 bool Player::checkSelfCollision(objPos& newhead)
 {
-    /// Check the new head position against the body
+    // Check the new head position against the body
     for (int i = 1; i < playerPosList->getSize(); i++) { // Start from 1 to exclude head
         objPos segment = playerPosList->getElement(i);
         if (segment.isPosEqual(&newhead)) {
@@ -256,7 +256,7 @@ void Player::handleFoodConsumption(char foodType)
     switch (foodType) {
         case 'X': growth = 1; scoreIncrement = 1; break;
         case 'Y': growth = 1; scoreIncrement = 10; break;
-        case 'Z': growth = 10; scoreIncrement = 50; break;
+        case 'Z': growth = 3; scoreIncrement = 30; break;
     }
 
     // Grow snake from the tail

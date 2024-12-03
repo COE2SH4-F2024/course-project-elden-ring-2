@@ -160,7 +160,7 @@ void DrawScreen(void)
     MacUILib_printf("Food Guide:\n----------\n");
     MacUILib_printf("🍎: Regular Food (Score +1, Length +1)\n");
     MacUILib_printf("⭐: Special Food (Score +10, Length +1)\n");
-    MacUILib_printf("🌟: Very special food (Score +50, Length +10)\n");
+    MacUILib_printf("🌟: Very special food (Score +30, Length +3)\n");
     MacUILib_printf("\nUse AWSD keys to move the snake around!\n\n");
     MacUILib_printf("Score: %d\n", player->getScore());
     MacUILib_printf("Length: %d\n", player->getPlayerPos()->getSize());
