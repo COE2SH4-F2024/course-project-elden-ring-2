@@ -245,6 +245,7 @@ bool Player::checkSelfCollision(objPos& newhead)
             return true; // Collision detected
         }
     }
+    
     return false;
 }
 

@@ -74,7 +74,6 @@ void Initialize(void)
 
     
     food->generateFood(player->getPlayerPos()); //Random food position
-
     
 }
 
@@ -115,7 +114,7 @@ void DrawScreen(void)
             {
                 if (x == body->getElement(i).pos->x && y == body->getElement(i).pos->y) 
                 {
-                    MacUILib_printf("🥹");
+                    MacUILib_printf("🟣");
                     printed = true;
                     break;
                 }
