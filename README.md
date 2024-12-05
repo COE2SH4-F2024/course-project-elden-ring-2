@@ -8,8 +8,8 @@ You must watch the briefing video and read through the manual to engage in the d
 Section: L01
 
 Team Information
-Member 1 MacID: Jyotiraditya Pendyala
+Member 1 MacID: pendylaj
 Member 1 StudentID: 400496978
 
-Member 2 MacID: Andrew Chai
+Member 2 MacID: chaia1
 Member 2 StudentID: 400441896
